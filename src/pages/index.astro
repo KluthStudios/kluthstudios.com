@@ -1,0 +1,63 @@
+---
+import Base from '../layouts/Base.astro';
+import Preloader from '../components/Preloader.astro';
+import Cursor from '../components/Cursor.astro';
+import Header from '../components/Header.astro';
+import Hud from '../components/Hud.astro';
+import Hero from '../components/Hero.astro';
+import Studio from '../components/Studio.astro';
+import Gate from '../components/Gate.astro';
+import Works from '../components/Works.astro';
+import Capabilities from '../components/Capabilities.astro';
+import Pit from '../components/Pit.astro';
+import GridOverlay from '../components/GridOverlay.astro';
+---
+
+<Base
+  title="Kluth Studios — One dream lap at a time"
+  description="Kluth Studios is a design & development group building playable prototypes, realtime 3D for the web, interfaces and tools. One continuous lap from dawn to night."
+  path="/"
+  bodyClass="is-loading"
+>
+  <noscript slot="head">
+    <style>
+      #preloader, #cursor, #hud { display: none !important; }
+      body.is-loading { overflow: auto !important; }
+      .sr-mask > .sr-in { transform: none !important; }
+      .fade { opacity: 1 !important; transform: none !important; }
+      #hero { opacity: 1; }
+    </style>
+  </noscript>
+
+  <!-- Skip link -->
+  <a class="skip mono" href="#works">Skip to works</a>
+
+  <!-- One fixed WebGL canvas behind everything (dawn → night) -->
+  <canvas id="scene" aria-hidden="true"></canvas>
+
+  <Preloader />
+  <Cursor />
+  <Header />
+  <Hud />
+
+  <main id="top">
+    <Hero />
+    <Studio />
+    <Gate km="KM 07.4 — FUCHSRÖHRE ▸ ADENAUER FORST" word="Sector&nbsp;02" sub="where the forest goes dark." />
+    <Works />
+    <Capabilities />
+    <Gate km="KM 19.1 — DÖTTINGER HÖHE" word="Sector&nbsp;04" sub="flat out, lights on." />
+    <Pit />
+  </main>
+
+  <GridOverlay />
+
+  <!--
+    The runtime is deliberately three classic, unbundled scripts:
+    Astro ships the page as pure static HTML and these enhance it.
+    Order matters — scene.js needs the THREE global.
+  -->
+  <script is:inline defer src="/js/three.min.js"></script>
+  <script is:inline defer src="/js/scene.js"></script>
+  <script is:inline defer src="/js/main.js"></script>
+</Base>

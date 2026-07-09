@@ -1,0 +1,11 @@
+---
+interface Props { km: string; word: string; sub: string }
+const { km, word, sub } = Astro.props;
+---
+<section class="gate">
+  <div class="wrap">
+    <p class="mono fade" data-reveal>{km}</p>
+    <p class="gate-word fade" data-reveal set:html={word}></p>
+    <p class="gate-sub fade" data-reveal>{sub}</p>
+  </div>
+</section>

@@ -1,0 +1,106 @@
+---
+import { projects } from '../data/site';
+
+/* Number the real projects (001, 002 …); reserved slots are unnumbered. */
+let n = 0;
+const items = projects.map((p) => ({
+  p,
+  num: p.kind === 'reserved' ? null : String(++n).padStart(3, '0'),
+}));
+
+const featured = items.filter((i) => i.p.kind === 'featured');
+const gridItems = items.filter((i) => i.p.kind !== 'featured');
+
+const isExternal = (href: string) => /^https?:/i.test(href);
+const slotNo = (id: string) => id.replace(/\D/g, '') || '—';
+---
+
+<section id="works" class="night">
+  <div class="wrap">
+    <div class="sector-head">
+      <span class="mono">S2 · INTO THE NIGHT</span>
+      <span class="mono">WORKS — 02</span>
+    </div>
+    <h2 class="works-title split" data-reveal>Selected <span class="serif-i">works</span></h2>
+
+    <div id="feat-slot">
+      {featured.map(({ p, num }) => (
+        <article class="feat fade" data-reveal>
+          <div class="feat-art">
+            <span class="chip mono">{p.status}</span>
+            <canvas data-telemetry data-seed={p.seed ?? 1} aria-hidden="true"></canvas>
+          </div>
+          <div class="feat-body">
+            <div class="feat-top mono"><span>{num} / {p.type}</span><span>{p.year}</span></div>
+            <h3 class="feat-title">{p.title}</h3>
+            <p class="feat-kicker">{p.kicker}</p>
+            <p class="feat-desc">{p.desc}</p>
+            {p.stats && (
+              <div class="feat-stats mono">
+                {p.stats.map(([label, value]) => (
+                  <div><span>{label}</span><b>{value}</b></div>
+                ))}
+              </div>
+            )}
+            {p.tags && (
+              <div class="tag-row mono">
+                {p.tags.map((t) => <span class="tag">{t}</span>)}
+              </div>
+            )}
+            <div class="feat-links">
+              {(p.links ?? []).map((l, i) => (
+                <a
+                  class={'btn mono' + (i === 0 ? ' btn--solid' : '')}
+                  href={l.href}
+                  target={isExternal(l.href) ? '_blank' : undefined}
+                  rel={isExternal(l.href) ? 'noopener' : undefined}
+                  data-cursor="go"
+                >
+                  <span>{l.label}</span><span class="arr" aria-hidden="true">→</span>
+                </a>
+              ))}
+            </div>
+          </div>
+        </article>
+      ))}
+    </div>
+
+    <div class="works-grid" id="works-grid">
+      {gridItems.map(({ p, num }) =>
+        p.kind === 'reserved' ? (
+          <div class="card card--reserved">
+            <span class="mono">Slot {slotNo(p.id)}</span>
+            <div class="redact"><i></i><i></i><i></i></div>
+            <span class="mono eta">{p.eta ?? 'In development'}</span>
+            <span class="mono">Next transmission from the studio</span>
+          </div>
+        ) : p.links?.[0] ? (
+          <a
+            class="card fade"
+            data-reveal
+            data-cursor="open"
+            href={p.links[0].href}
+            target={isExternal(p.links[0].href) ? '_blank' : undefined}
+            rel={isExternal(p.links[0].href) ? 'noopener' : undefined}
+          >
+            <div class="card-art"><canvas data-telemetry data-seed={p.seed ?? 7} aria-hidden="true"></canvas></div>
+            <div class="card-top mono"><span>{num}</span><span>{p.status ?? p.year}</span></div>
+            <h3 class="card-title">{p.title}</h3>
+            <p class="card-kicker">{p.kicker}</p>
+            <p class="card-desc">{p.desc}</p>
+            <div class="card-foot mono"><span>{p.type}</span><span class="arr" aria-hidden="true">→</span></div>
+          </a>
+        ) : (
+          <article class="card fade" data-reveal>
+            <div class="card-art"><canvas data-telemetry data-seed={p.seed ?? 7} aria-hidden="true"></canvas></div>
+            <div class="card-top mono"><span>{num}</span><span>{p.status ?? p.year}</span></div>
+            <h3 class="card-title">{p.title}</h3>
+            <p class="card-kicker">{p.kicker}</p>
+            <p class="card-desc">{p.desc}</p>
+            <div class="card-foot mono"><span>{p.type}</span><span class="arr" aria-hidden="true">→</span></div>
+          </article>
+        )
+      )}
+    </div>
+  </div>
+</section>

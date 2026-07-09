@@ -1,0 +1,26 @@
+---
+import { studio } from '../data/site';
+
+/* One closed path, drawn twice: a faint "track" and a bright "run"
+   whose dash-offset follows scroll. main.js reads data-ref-lap. */
+const trackPath =
+  'M78 54 C60 57, 38 58, 26 54 C18 51.5, 12 46, 14 40 C16 34, 24 34, 26 29 ' +
+  'C28 24, 20 22, 16 17 C13 13, 18 8, 25 9 C33 10, 34 17, 41 18 C48 19, 50 11, 57 10 ' +
+  'C64 9, 66 15, 72 16 C79 17, 80 10, 87 11 C93 12, 95 19, 92 24 C89 29, 82 27, 80 32 ' +
+  'C78 37, 85 39, 86 44 C87 49, 84 52, 78 54 Z';
+---
+
+<!-- Lap HUD: the whole page is one lap -->
+<aside id="hud" aria-hidden="true" data-ref-lap={studio.referenceLap}>
+  <svg class="hud-map" viewBox="0 0 100 64" xmlns="http://www.w3.org/2000/svg">
+    <path class="hud-track" d={trackPath}></path>
+    <path class="hud-run" d={trackPath}></path>
+    <line class="hud-sf" x1="77.2" y1="51" x2="78.8" y2="57"></line>
+    <circle class="hud-dot" cx="78" cy="54" r="2.1"></circle>
+  </svg>
+  <div class="hud-rows mono">
+    <div class="hud-row"><span>SECTOR</span><b id="hud-sector">S1 / 4</b></div>
+    <div class="hud-row"><span>LAP</span><b id="hud-lap">0:00.000</b></div>
+    <div class="hud-row"><span>TRACK</span><b>20.832 KM</b></div>
+  </div>
+</aside>

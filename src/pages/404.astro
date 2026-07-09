@@ -1,0 +1,33 @@
+---
+import Base from '../layouts/Base.astro';
+---
+
+<Base
+  title="Off track — Kluth Studios"
+  description="You’ve found the gravel trap."
+  path="/404"
+  themeColor="#0A100E"
+  noindex
+>
+  <main class="nf">
+    <p class="mono nf-flag">YELLOW FLAG — SECTOR UNKNOWN</p>
+    <h1 class="nf-code">404</h1>
+    <p class="nf-sub">You’ve found the gravel trap. The lap continues back at the start line.</p>
+    <a class="mono" href="/">← RETURN TO THE LAP</a>
+  </main>
+</Base>
+
+<style is:global>
+  body { background: var(--nacht); color: var(--nebel); min-height: 100svh; display: grid; place-items: center; }
+  .nf { text-align: center; display: grid; gap: 1.1rem; padding: 2rem; }
+  .nf-flag { color: var(--signal); }
+  .nf-code {
+    font-family: var(--f-disp); font-weight: 860; text-transform: uppercase;
+    font-variation-settings: "wdth" 125;
+    font-size: clamp(4.5rem, 20vw, 13rem); line-height: .9; letter-spacing: -.015em;
+    color: transparent; -webkit-text-stroke: 1.5px var(--nebel);
+  }
+  .nf-sub { font-family: var(--f-serif); font-style: italic; font-size: clamp(1.2rem, 2.4vw, 1.7rem); color: var(--asche); }
+  .nf a { display: inline-block; margin-top: .6rem; border: 1px solid var(--line-d); padding: .8rem 1.4rem; }
+  .nf a:hover, .nf a:focus-visible { background: var(--nebel); color: var(--tanne); }
+</style>

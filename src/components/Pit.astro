@@ -1,0 +1,35 @@
+---
+import { studio } from '../data/site';
+const year = new Date().getFullYear();
+---
+<footer id="pit" class="night">
+  <div class="wrap">
+    <p class="pit-kicker mono">S4 · PIT WALL — OPEN</p>
+    <a class="pit-cta" href={`mailto:${studio.contact}`} data-cursor="say hi">
+      <span class="row"><span class="fill">Start</span></span>
+      <span class="row"><span class="fill">something</span>&nbsp;<span class="serif-i">with&nbsp;us</span></span>
+    </a>
+    <div class="pit-grid">
+      <div class="pit-col">
+        <span class="mono">CONTACT</span>
+        <a class="pit-link" href={`mailto:${studio.contact}`} data-cursor="email">{studio.contact}</a>
+        <a class="pit-link" href={studio.github} target="_blank" rel="noopener" data-cursor="github">github.com/KluthStudios</a>
+      </div>
+      <div class="pit-col">
+        <span class="mono">CIRCUIT</span>
+        <a class="pit-link" href="#works" data-cursor="works">Works</a>
+        <a class="pit-link" href="#studio" data-cursor="studio">Studio</a>
+        <a class="pit-link" href="guide/" data-cursor="guide">Build guide</a>
+      </div>
+      <div class="pit-col">
+        <span class="mono">TRANSMISSION</span>
+        <p class="pit-note">New projects land on this grid as the team ships them — two slots on the board are already reserved. The whole site is hand-written; the <a class="pit-link" href="guide/">guide</a> shows exactly how.</p>
+      </div>
+    </div>
+    <div class="pit-base mono">
+      <span data-clock></span>
+      <span class="hint">PRESS <kbd>G</kbd> FOR GRID</span>
+      <span>© <span id="year">{year}</span> KLUTH STUDIOS — BUILT BY HAND, NO TEMPLATES</span>
+    </div>
+  </div>
+</footer>

@@ -1,0 +1,43 @@
+---
+import { studio } from '../data/site';
+
+const marquee = [
+  'Game prototypes',
+  'Realtime 3D',
+  'Interface design',
+  'die Traumrunde', // rendered in the serif dream voice
+  'Tools & pipelines',
+  'World building',
+];
+---
+
+<section id="hero">
+  <div class="wrap">
+    <div class="hero-meta mono">
+      <span>EST. {studio.est} — U.S. BASED · EIFEL AT HEART</span>
+      <span>{studio.coords}</span>
+    </div>
+    <h1 class="hero-title">
+      <span class="row"><span class="sr-mask"><span class="sr-in" style="--d:.06s">Kluth</span></span></span>
+      <span class="row indent"><span class="sr-mask"><span class="sr-in" style="--d:.16s">Studios</span></span></span>
+    </h1>
+    <div class="hero-sub">
+      <p class="dream">One <span class="sig">dream lap</span> at a&nbsp;time.</p>
+      <div class="hero-cue mono"><i></i><span>BEGIN LAP — SCROLL</span></div>
+    </div>
+  </div>
+  <div class="mq mono" aria-hidden="true">
+    <div class="mq-track">
+      {[0, 1].map(() => (
+        <div class="mq-set">
+          {marquee.map((item) => (
+            <>
+              <span>{item === 'die Traumrunde' ? <em>{item}</em> : item}</span>
+              <span class="dot">◆</span>
+            </>
+          ))}
+        </div>
+      ))}
+    </div>
+  </div>
+</section>

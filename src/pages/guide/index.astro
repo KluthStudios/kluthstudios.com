@@ -1,0 +1,268 @@
+---
+import Base from '../../layouts/Base.astro';
+import Mark from '../../components/Mark.astro';
+---
+
+<Base
+  title="Build guide — Kluth Studios"
+  description="How kluthstudios.com was built: the lap concept, the design system, the WebGL scene, how to add a project, and how to deploy to the domain."
+  path="/guide/"
+  themeColor="#EDEFEA"
+>
+  <header class="g-head">
+    <a class="brand" href="../" aria-label="Kluth Studios — home">
+      <Mark />
+      <span class="brand-word">Kluth&nbsp;Studios</span>
+    </a>
+    <nav aria-label="Guide">
+      <a class="nav-link mono" href="../">← Back to the lap</a>
+      <a class="nav-link mono" href="https://github.com/KluthStudios" target="_blank" rel="noopener">GitHub ↗</a>
+    </nav>
+  </header>
+
+  <main class="g-wrap">
+
+    <div class="g-hero">
+      <p class="mono g-kicker">GUIDE — HOW THIS SITE WAS BUILT</p>
+      <h1 class="g-title">The lap,<br /><span class="serif-i">explained.</span></h1>
+      <p class="g-lede">Everything on kluthstudios.com is hand-written — authored as Astro components, compiled to pure static HTML, zero client-side framework, no stock assets. This page is the pit-lane walkthrough so anyone on the team can extend it or rebuild it from zero.</p>
+    </div>
+
+    <!-- 00 -->
+    <section class="g-sec" id="concept">
+      <div class="g-sec-head"><span class="g-num">§ 00</span><h2 class="g-h">The concept</h2></div>
+      <div class="g-cols">
+        <div class="g-copy">
+          <p>The studio’s first project, <strong>Traumrunde</strong>, is a Nürburgring driving sim — so the portfolio borrows its metaphor: <strong>the entire page is one lap</strong>, driven from dawn to night. “Traumrunde” is German for <em>dream lap</em>.</p>
+          <p>Scrolling is the throttle. A fixed WebGL landscape sits behind every section and its palette interpolates through three keyframes — dawn, dusk, night — as you descend. A lap-timer HUD in the corner draws a stylised circuit, moves a marker along it, ticks sectors S1–S4 and maps your scroll position onto a reference lap time of 6:57.000.</p>
+          <p>The architecture matches the ethos. <strong>Astro</strong> renders every card, sector and slot to static HTML at build time from one typed data file; the only JavaScript the visitor downloads is three small, classic, hand-written scripts that enhance that HTML — the scene, the HUD, the flourishes. No client-side framework, no hydration, nothing to parse before the page is readable.</p>
+        </div>
+        <div class="g-aside">
+          <span class="mono">FILE MAP</span>
+          <pre class="filemap">src/pages/index.astro        <span class="c">the lap</span>
+src/pages/guide/index.astro  <span class="c">this page (no JS)</span>
+src/pages/404.astro          <span class="c">gravel trap</span>
+src/layouts/Base.astro       <span class="c">head, meta, fonts</span>
+src/components/*.astro       <span class="c">header, HUD, works…</span>
+src/data/site.ts             <span class="c">★ site data — edit me</span>
+src/styles/main.css          <span class="c">design system</span>
+public/js/scene.js           <span class="c">WebGL dawn→night</span>
+public/js/main.js            <span class="c">HUD, reveals, cursor</span>
+public/js/three.min.js       <span class="c">three.js r128 (MIT)</span>
+public/fonts/*.woff2         <span class="c">self-hosted, subset</span>
+.github/workflows/deploy.yml <span class="c">push → build → Pages</span></pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- 01 -->
+    <section class="g-sec" id="design-system">
+      <div class="g-sec-head"><span class="g-num">§ 01</span><h2 class="g-h">The design system</h2></div>
+      <div class="g-copy">
+        <p>The palette avoids the default “dark portfolio” black-and-neon. It is fog, forest and petrol — the Eifel at 6&nbsp;AM — with one marshal-flag orange used strictly as a signal, never as decoration.</p>
+      </div>
+      <div class="chips">
+        <div class="chip-c"><i style="background:#EDEFEA"></i><div><span class="mono">--nebel</span><span class="mono dim">#EDEFEA · fog paper</span></div></div>
+        <div class="chip-c"><i style="background:#0E1613"></i><div><span class="mono">--tanne</span><span class="mono dim">#0E1613 · forest ink</span></div></div>
+        <div class="chip-c"><i style="background:#0A100E"></i><div><span class="mono">--nacht</span><span class="mono dim">#0A100E · night</span></div></div>
+        <div class="chip-c"><i style="background:#49594F"></i><div><span class="mono">--moos</span><span class="mono dim">#49594F · moss</span></div></div>
+        <div class="chip-c"><i style="background:#96A29A"></i><div><span class="mono">--asche</span><span class="mono dim">#96A29A · ash</span></div></div>
+        <div class="chip-c"><i style="background:#E8420E"></i><div><span class="mono">--signal</span><span class="mono dim">#E8420E · marshal</span></div></div>
+        <div class="chip-c"><i style="background:#FFB454"></i><div><span class="mono">--amber</span><span class="mono dim">#FFB454 · headlight</span></div></div>
+      </div>
+      <div class="type-spec">
+        <div>
+          <p class="ts-a">Archivo variable — display</p>
+          <p class="mono dim spec-note">wdth 125 · wght 860 · one file carries the entire weight/width range (119 KB)</p>
+        </div>
+        <div>
+          <p class="ts-b">Instrument Serif italic — the dream voice</p>
+          <p class="mono dim spec-note">used only for the lyrical asides, never for UI</p>
+        </div>
+        <div>
+          <p class="ts-c">Martian Mono — telemetry: labels, timers, coordinates</p>
+          <p class="mono dim spec-note">tabular numerals keep the lap timer from jittering</p>
+        </div>
+      </div>
+      <div class="g-copy after-spec">
+        <p>All three families are subset to Latin and self-hosted as <code class="inline">woff2</code> (≈ 213 KB total), so the site makes <strong>zero third-party requests</strong>. Because Archivo is a variable font, every width/weight on the site — from the hairline nav to the 9-rem pit-wall headline — comes from a single file.</p>
+      </div>
+    </section>
+
+    <!-- 02 -->
+    <section class="g-sec" id="lap-system">
+      <div class="g-sec-head"><span class="g-num">§ 02</span><h2 class="g-h">The lap system</h2></div>
+      <div class="g-cols">
+        <div class="g-copy">
+          <p>One <code class="inline">requestAnimationFrame</code>-throttled scroll handler computes progress <code class="inline">p = scrollY / (scrollHeight − innerHeight)</code> and fans it out to everything:</p>
+          <p><strong>The scene.</strong> <code class="inline">scene.js</code> owns a single fixed canvas. Terrain is a plane displaced in the vertex shader by two octaves of value noise; a JS twin of the same noise places a glowing ribbon — the dream lap — onto that terrain as a closed Catmull-Rom tube. Sky, fog, terrain, ribbon and dust motes all read one uniform, <code class="inline">uCycle</code>, and mix through three keyframed palettes (dawn → dusk → night). Scroll eases <code class="inline">uCycle</code> toward <code class="inline">p</code>; the pointer adds a small camera parallax.</p>
+          <p><strong>The HUD.</strong> The circuit is one closed SVG path duplicated twice: a faint “track” and a bright “run” whose <code class="inline">stroke-dashoffset</code> equals <code class="inline">length × (1 − p)</code>, so it draws itself as you scroll. The marker dot rides <code class="inline">getPointAtLength(length × p)</code>. The timer is just <code class="inline">p × 417 000 ms</code> — a 6:57.000 reference lap — and sectors flip when the viewport centre passes each section.</p>
+          <p><strong>The cards.</strong> Every project card’s artwork is generated at load by a seeded PRNG (mulberry32): a speed trace, a throttle/brake band, a mini circuit and a ghost number. Change the seed, get new art. No images anywhere on the site.</p>
+        </div>
+        <div class="g-aside">
+          <span class="mono">GRACEFUL DEGRADATION</span>
+          <p class="aside-copy">No WebGL → a static gradient sky takes over (<code class="inline">body.no-webgl</code>).<br /><br />
+          <code class="inline">prefers-reduced-motion</code> → marquee, cursor, tilt and reveals switch off; the scene renders single frames instead of animating.<br /><br />
+          No JavaScript → because Astro pre-renders everything, the full works grid, copy and links are all still there; only the flourishes are missing.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 03 -->
+    <section class="g-sec" id="add-project">
+      <div class="g-sec-head"><span class="g-num">§ 03</span><h2 class="g-h">Adding a project</h2></div>
+      <div class="g-copy">
+        <p>The grid, numbering, artwork and layout are all generated from <strong>one typed file</strong>: <code class="inline">src/data/site.ts</code>. Append an object, save, and the dev server (<code class="inline">npm run dev</code>) hot-reloads the grid — the types will refuse to build anything malformed. Two redacted slots are already on the board so the grid never looks empty while work is in flight.</p>
+      </div>
+      <pre>&#123;
+  <span class="k">kind</span>:  <span class="s">'card'</span>,        <span class="c">// 'featured' = spotlight · 'card' = grid · 'reserved' = redacted slot</span>
+  <span class="k">id</span>:    <span class="s">'project-id'</span>,
+  <span class="k">title</span>: <span class="s">'Project name'</span>,
+  <span class="k">kicker</span>:<span class="s">'One-line hook'</span>,
+  <span class="k">year</span>:  <span class="s">'2026'</span>,
+  <span class="k">type</span>:  <span class="s">'Prototype'</span>,    <span class="c">// shown in the card footer</span>
+  <span class="k">status</span>:<span class="s">'In development'</span>,
+  <span class="k">desc</span>:  <span class="s">'Two or three sentences. Plain text — Astro escapes it for you.'</span>,
+  <span class="k">tags</span>:  [<span class="s">'Three.js'</span>, <span class="s">'WebAudio'</span>],
+  <span class="k">stats</span>: [[<span class="s">'Label'</span>, <span class="s">'Value'</span>]],   <span class="c">// featured cards only</span>
+  <span class="k">links</span>: [&#123; <span class="k">label</span>: <span class="s">'View repository'</span>, <span class="k">href</span>: <span class="s">'https://github.com/KluthStudios/…'</span> &#125;],
+  <span class="k">seed</span>:  42            <span class="c">// any integer — regenerates the card art. Reroll until you like it.</span>
+&#125;</pre>
+      <div class="g-copy after-spec">
+        <p>Keep one or two <code class="inline">kind: 'featured'</code> entries at most; everything else reads best as cards. When a real project is ready, replace a <code class="inline">reserved</code> slot with it and add a fresh one at the end if you want to keep the “more coming” signal.</p>
+      </div>
+    </section>
+
+    <!-- 04 -->
+    <section class="g-sec" id="deploy">
+      <div class="g-sec-head"><span class="g-num">§ 04</span><h2 class="g-h">Deploying to kluthstudios.com</h2></div>
+      <div class="g-cols">
+        <div>
+          <ol class="steps">
+            <li><strong>Push the project to GitHub.</strong> Create a repository under the org — e.g. <code class="inline">KluthStudios/kluthstudios.com</code> — and push everything to <code class="inline">main</code>. The deploy workflow (<code class="inline">.github/workflows/deploy.yml</code>) and the <code class="inline">CNAME</code> file (in <code class="inline">public/</code>) are already included.</li>
+            <li><strong>Turn on Pages.</strong> Repo → Settings → Pages → Source: <strong>GitHub Actions</strong>. From now on every push to <code class="inline">main</code> builds the site and deploys it automatically — no manual steps.</li>
+            <li><strong>Point the DNS.</strong> At the domain registrar, add four A records on the apex (<code class="inline">@</code>): <code class="inline">185.199.108.153</code>, <code class="inline">185.199.109.153</code>, <code class="inline">185.199.110.153</code>, <code class="inline">185.199.111.153</code> — and a CNAME on <code class="inline">www</code> pointing to <code class="inline">kluthstudios.github.io</code>.</li>
+            <li><strong>Bind the domain.</strong> Back in Settings → Pages, enter <code class="inline">kluthstudios.com</code> as the custom domain, wait for the DNS check, then tick <strong>Enforce HTTPS</strong>. Propagation is usually minutes, occasionally a few hours.</li>
+            <li><strong>Verify the lap.</strong> Hard-refresh, scroll to the bottom, confirm the timer crosses the line at 6:57.000. You’re live.</li>
+          </ol>
+          <div class="g-copy after-spec">
+            <p><strong>Prefer Netlify, Vercel or Cloudflare Pages?</strong> All three auto-detect Astro: connect the repo, accept the defaults (<code class="inline">npm run build</code>, output <code class="inline">dist</code>), attach the domain there instead. Locally, <code class="inline">npm run dev</code> serves the site at <code class="inline">localhost:4321</code> and <code class="inline">npm run preview</code> serves a production build.</p>
+          </div>
+        </div>
+        <div class="g-aside">
+          <span class="mono">HONEST NOTES</span>
+          <p class="aside-copy">① The <strong>Traumrunde repo is currently private</strong> — its “View repository” button will 404 for the public until the repo is flipped to public (or the link is pointed at a release/demo).<br /><br />
+          ② <code class="inline">hello@kluthstudios.com</code> is a <strong>placeholder inbox</strong> — set the real address once in <code class="inline">src/data/site.ts</code>.<br /><br />
+          ③ DNS and hosting need account access, so those two steps are yours — everything else ships in this repo.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 05 -->
+    <section class="g-sec" id="qa">
+      <div class="g-sec-head"><span class="g-num">§ 05</span><h2 class="g-h">The four passes</h2></div>
+      <div class="g-copy pass-intro">
+        <p>Before sign-off, every element went through four full iteration passes — the same routine to reuse whenever the site changes:</p>
+      </div>
+      <div class="qa">
+        <div><span class="mono">PASS 1<br />FUNCTION</span><p>The Astro build must compile clean — types included — plus a syntax check on every runtime script, HTML validation of the built output, and a mechanical sweep that every referenced asset path (fonts, scripts, styles, icons, links between pages) resolves to a real file in <code class="inline">dist/</code>.</p></div>
+        <div><span class="mono">PASS 2<br />ROBUSTNESS</span><p>Exercise the failure paths: WebGL unavailable, JavaScript disabled, <code class="inline">prefers-reduced-motion</code>, tiny viewports, resize mid-scroll. A DOM smoke-run boots the built page headlessly and asserts the HUD, reveals and card art all initialise cleanly on top of the pre-rendered HTML.</p></div>
+        <div><span class="mono">PASS 3<br />DESIGN</span><p>Fine-tooth comb on the system itself: compute WCAG contrast ratios for every text/background pair in the palette, audit the type scale and spacing rhythm across all four breakpoints, and check that the signal colour is never used where it can’t hold contrast.</p></div>
+        <div><span class="mono">PASS 4<br />POLISH</span><p>The last 2%: cursor labels, focus-visible states, tab order, meta/OG tags, micro-copy, easter eggs (press <strong>G</strong> for the layout grid), and a final read of every sentence on the site out loud.</p></div>
+      </div>
+    </section>
+
+    <!-- 06 -->
+    <section class="g-sec" id="colophon">
+      <div class="g-sec-head"><span class="g-num">§ 06</span><h2 class="g-h">Colophon</h2></div>
+      <div class="g-copy">
+        <p><strong>Type:</strong> Archivo (Omnibus-Type), Instrument Serif (Rodrigo Fuenzalida &amp; Jordan Egstad), Martian Mono (Evil Martians) — all under the SIL Open Font License, subset and self-hosted.</p>
+        <p><strong>Code:</strong> built with Astro (MIT), which compiles the components to plain static HTML; three.js r128 (MIT) is the only runtime dependency. Everything else — shaders, the ribbon’s geometry, HUD, cursor, reveals, procedural card art, this guide — is original and hand-written. Zero client-side framework, no trackers, no cookies, no stock assets, no generated imagery.</p>
+        <p><strong>Structure:</strong> the build output in <code class="inline">dist/</code> is plain HTML + CSS + three classic scripts, so it runs identically on a $0 static host, GitHub Pages, or the custom domain.</p>
+      </div>
+    </section>
+
+    <footer class="g-foot mono">
+      <span>© 2026 KLUTH STUDIOS</span>
+      <a class="nav-link" href="../">RETURN TO THE LAP ←</a>
+    </footer>
+
+  </main>
+</Base>
+
+<style is:global>
+  /* Guide-local layer. The guide is deliberately static: no JS at all. */
+  body { background: var(--nebel); color: var(--tanne); }
+  body::after { opacity: .04; }
+  .g-head {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 1.1rem var(--gutter); border-bottom: 1px solid var(--line-l);
+  }
+  .g-head .brand { color: var(--tanne); }
+  .g-head nav { display: flex; gap: 1.6rem; }
+  .g-wrap { width: min(1080px, calc(100% - 2 * var(--gutter))); margin: 0 auto; }
+  .g-hero { padding: clamp(3.5rem, 9vh, 6.5rem) 0 clamp(2.5rem, 6vh, 4rem); }
+  .g-kicker { color: var(--moos); margin-bottom: 1rem; }
+  .g-title {
+    font-family: var(--f-disp); font-weight: 860; text-transform: uppercase;
+    font-variation-settings: "wdth" 125;
+    font-size: clamp(2.8rem, 8vw, 6.4rem); line-height: .9; letter-spacing: -.015em;
+  }
+  .g-title .serif-i { font-weight: 400; font-size: .82em; color: var(--signal-ink); text-transform: none; }
+  .g-lede { font-family: var(--f-serif); font-style: italic; font-size: clamp(1.25rem, 2.2vw, 1.7rem); max-width: 44ch; margin-top: 1.2rem; color: var(--moos); }
+  .g-sec { padding: clamp(2.2rem, 6vh, 4rem) 0; border-top: 1px solid var(--line-l); }
+  .g-sec-head { display: flex; align-items: baseline; gap: 1.2rem; margin-bottom: 1.6rem; }
+  .g-num { font-family: var(--f-mono); font-size: .72rem; letter-spacing: .16em; color: var(--signal-ink); }
+  .g-h {
+    font-family: var(--f-disp); font-weight: 800; text-transform: uppercase;
+    font-variation-settings: "wdth" 118;
+    font-size: clamp(1.5rem, 3.4vw, 2.4rem); line-height: 1; letter-spacing: -.01em;
+  }
+  .g-cols { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: 2.4rem; align-items: start; }
+  .g-copy { display: grid; gap: 1rem; max-width: 62ch; color: #33413A; }
+  .g-copy strong { color: var(--tanne); font-weight: 640; }
+  .g-copy a { text-decoration: underline; text-underline-offset: 3px; }
+  .g-aside { border: 1px solid var(--line-l); padding: 1.2rem 1.3rem; display: grid; gap: .8rem; background: var(--nebel-2); }
+  .g-aside .mono { color: var(--moos); }
+  .aside-copy { color: #33413A; }
+  pre {
+    background: var(--tanne); color: var(--nebel);
+    padding: 1.2rem 1.3rem; overflow-x: auto;
+    font-family: var(--f-mono); font-size: .78rem; line-height: 1.75;
+    border-radius: 2px; letter-spacing: 0;
+  }
+  pre.filemap { margin: 0; }
+  pre .c { color: #8FA398; }      /* comment */
+  pre .k { color: var(--amber); } /* key */
+  pre .s { color: #F0B9A6; }      /* string */
+  code.inline { font-family: var(--f-mono); font-size: .82em; background: var(--nebel-2); border: 1px solid var(--line-l); padding: .08em .4em; border-radius: 3px; }
+  .chips { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: .8rem; margin: 1.2rem 0 .4rem; }
+  .chip-c { border: 1px solid var(--line-l); }
+  .chip-c i { display: block; height: 64px; }
+  .chip-c div { padding: .55rem .7rem; display: grid; gap: .15rem; }
+  .mono.dim { color: var(--moos); }
+  .type-spec { display: grid; gap: 1.4rem; margin-top: 1.2rem; }
+  .type-spec > div { border-top: 1px solid var(--line-l); padding-top: 1rem; }
+  .ts-a { font-family: var(--f-disp); font-weight: 860; font-variation-settings: "wdth" 125; text-transform: uppercase; font-size: clamp(1.8rem, 4.6vw, 3.4rem); line-height: .95; }
+  .ts-b { font-family: var(--f-serif); font-style: italic; font-size: clamp(1.4rem, 3vw, 2.1rem); }
+  .ts-c { font-family: var(--f-mono); font-size: .82rem; letter-spacing: .1em; text-transform: uppercase; }
+  .spec-note { margin-top: .4rem; }
+  .after-spec { margin-top: 1.6rem; }
+  .pass-intro { margin-bottom: 1.4rem; }
+  ol.steps { display: grid; gap: 1rem; padding-left: 0; list-style: none; counter-reset: st; max-width: 62ch; color: #33413A; }
+  ol.steps li { counter-increment: st; position: relative; padding-left: 2.6rem; }
+  ol.steps li::before {
+    content: counter(st, decimal-leading-zero);
+    position: absolute; left: 0; top: .18em;
+    font-family: var(--f-mono); font-size: .68rem; color: var(--signal-ink); letter-spacing: .1em;
+  }
+  .qa { display: grid; gap: 0; border-top: 1px solid var(--line-l); }
+  .qa > div { display: grid; grid-template-columns: 7rem 1fr; gap: 1.2rem; padding: 1rem 0; border-bottom: 1px solid var(--line-l); }
+  .qa .mono { color: var(--signal-ink); }
+  .qa p { color: #33413A; max-width: 62ch; }
+  .g-foot { padding: 2rem 0 1.6rem; border-top: 1px solid var(--line-l); display: flex; justify-content: space-between; flex-wrap: wrap; gap: .8rem 2rem; color: var(--moos); }
+  @media (max-width: 900px) {
+    .g-cols { grid-template-columns: 1fr; }
+    .qa > div { grid-template-columns: 1fr; gap: .3rem; }
+  }
+</style>

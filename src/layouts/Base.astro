@@ -1,0 +1,61 @@
+---
+import '../styles/main.css';
+
+interface Props {
+  title: string;
+  description: string;
+  /** canonical path, e.g. "/" or "/guide/" */
+  path: string;
+  bodyClass?: string;
+  themeColor?: string;
+  noindex?: boolean;
+}
+
+const {
+  title,
+  description,
+  path,
+  bodyClass,
+  themeColor = '#0E1613',
+  noindex = false,
+} = Astro.props;
+
+const canonical = new URL(path, Astro.site);
+const ogImage = new URL('/og.png', Astro.site);
+---
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <meta name="theme-color" content={themeColor} />
+    {noindex && <meta name="robots" content="noindex" />}
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Kluth Studios" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <!-- Fonts are self-hosted; preload the two that paint first -->
+    <link rel="preload" href="/fonts/Archivo.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/MartianMono.woff2" as="font" type="font/woff2" crossorigin />
+
+    <slot name="head" />
+  </head>
+  <body class={bodyClass}>
+    <slot />
+  </body>
+</html>

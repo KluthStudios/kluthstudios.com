@@ -1,0 +1,24 @@
+{
+  "name": "kluthstudios-site",
+  "version": "1.0.0",
+  "description": "Kluth Studios portfolio — one continuous lap from dawn to night.",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro check && astro build",
+    "preview": "astro preview",
+    "astro": "astro",
+    "test": "npm run build && html-validate dist/index.html dist/guide/index.html dist/404.html && node qa/smoke-dist.cjs && node qa/smoke-rm.cjs"
+  },
+  "dependencies": {
+    "@astrojs/sitemap": "^3.7.3",
+    "astro": "^7.0.7"
+  },
+  "private": true,
+  "type": "module",
+  "devDependencies": {
+    "@astrojs/check": "^0.9.9",
+    "html-validate": "^11.5.5",
+    "jsdom": "^29.1.1",
+    "typescript": "^6.0.3"
+  }
+}

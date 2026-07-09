@@ -1,0 +1,26 @@
+---
+import { capabilities } from '../data/site';
+const roman = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII'];
+---
+<section id="capabilities" class="night">
+  <div class="wrap">
+    <div class="sector-head">
+      <span class="mono">S3 · WHAT WE DRIVE</span>
+      <span class="mono">CAPABILITIES — 03</span>
+    </div>
+    <div class="cap-list" id="cap-list">
+      {capabilities.map((c, i) => (
+        <div class="cap fade" data-reveal style={`--d:${(i * 0.06).toFixed(2)}s`}>
+          <span class="cap-idx mono">{roman[i] ?? i + 1}</span>
+          <div class="cap-main">
+            <h3 class="cap-title">{c.title}</h3>
+            <p class="cap-note">{c.note}</p>
+          </div>
+          <div class="cap-tags mono">
+            {c.tags.map((t) => <span class="tag">{t}</span>)}
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>

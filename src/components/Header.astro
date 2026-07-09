@@ -1,0 +1,18 @@
+---
+import Mark from './Mark.astro';
+import { studio } from '../data/site';
+---
+
+<header id="site-head">
+  <a class="brand" href="#top" aria-label="Kluth Studios — home" data-cursor="top">
+    <Mark />
+    <span class="brand-word">Kluth&nbsp;Studios</span>
+  </a>
+  <nav aria-label="Primary">
+    <a class="nav-link mono" href="#works" data-cursor="works">Works</a>
+    <a class="nav-link mono" href="#studio" data-cursor="studio">Studio</a>
+    <a class="nav-link mono" href="guide/" data-cursor="guide">Guide</a>
+    <a class="nav-link mono" href={studio.github} target="_blank" rel="noopener" data-cursor="github">GitHub ↗</a>
+    <span class="head-clock mono" data-clock></span>
+  </nav>
+</header>

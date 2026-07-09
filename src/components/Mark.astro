@@ -1,0 +1,10 @@
+---
+/** The K mark. `signal` colors the start/finish box. */
+interface Props { size?: number }
+const { size = 26 } = Astro.props;
+---
+<svg viewBox="0 0 26 26" fill="none" aria-hidden="true" width={size} height={size}>
+  <path d="M4 2h4.6v22H4z" fill="currentColor"></path>
+  <path d="M11 13 21.4 2h4.2L15.2 13l10.4 11h-4.2L11 13Z" fill="currentColor"></path>
+  <rect x="11" y="11" width="4" height="4" fill="#E8420E"></rect>
+</svg>
