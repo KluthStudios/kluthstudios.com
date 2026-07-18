@@ -1,0 +1,111 @@
+---
+import Base from './Base.astro';
+import Mark from '../components/Mark.astro';
+
+const { frontmatter } = Astro.props;
+---
+
+<Base
+  title={`${frontmatter.title} — Kluth Studios`}
+  description={frontmatter.description}
+  path={frontmatter.path}
+  themeColor="#EDEFEA"
+  bodyClass="legal-body"
+>
+  <header class="g-head">
+    <a class="brand" href="/" aria-label="Kluth Studios — home">
+      <Mark />
+      <span class="brand-word">Kluth&nbsp;Studios</span>
+    </a>
+    <nav aria-label="Legal">
+      <a class="nav-link mono" href="/">← Back to the lap</a>
+      <a class="nav-link mono" href="https://github.com/KluthStudios" target="_blank" rel="noopener">GitHub ↗</a>
+    </nav>
+  </header>
+
+  <main class="legal-wrap">
+    <div class="legal-hero">
+      <p class="mono legal-kicker">Legal</p>
+      <h1 class="legal-title">{frontmatter.title}</h1>
+      <p class="mono legal-updated">Last updated: {frontmatter.updated}</p>
+    </div>
+    <article class="legal-prose">
+      <slot />
+    </article>
+  </main>
+
+  <footer class="legal-foot mono">
+    <span>© 2026 Kluth Studios — built by hand, no templates</span>
+    <nav class="legal-links" aria-label="Legal">
+      <a href="/disclaimer">Disclaimer</a>
+      <a href="/privacy">Privacy</a>
+      <a href="/terms">Terms</a>
+    </nav>
+  </footer>
+
+  <style is:global>
+    /* Legal pages are static paper documents — same voice as the guide. */
+    body.legal-body { background: var(--nebel); color: var(--tanne); }
+    body.legal-body::after { opacity: .04; }
+
+    .legal-body .g-head {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 1.1rem var(--gutter); border-bottom: 1px solid var(--line-l);
+    }
+    .legal-body .g-head .brand { color: var(--tanne); }
+    .legal-body .g-head nav { display: flex; gap: 1.6rem; }
+
+    .legal-wrap { width: min(760px, calc(100% - 2 * var(--gutter))); margin: 0 auto; }
+
+    .legal-hero { padding: clamp(3rem, 8vh, 5.5rem) 0 clamp(1.6rem, 4vh, 2.6rem); }
+    .legal-kicker { color: var(--signal-ink); margin-bottom: 1rem; }
+    .legal-title {
+      font-family: var(--f-disp); font-weight: 860; text-transform: uppercase;
+      font-variation-settings: "wdth" 118;
+      font-size: clamp(2.4rem, 6.5vw, 4.6rem); line-height: .92; letter-spacing: -.015em;
+    }
+    .legal-updated { color: var(--moos); margin-top: 1.1rem; }
+
+    /* Prose rendered from markdown */
+    .legal-prose { color: #33413A; padding-bottom: clamp(3rem, 8vh, 5.5rem); }
+    .legal-prose > p:first-of-type { font-size: 1.05rem; color: var(--tanne); }
+    .legal-prose p { max-width: 68ch; line-height: 1.72; margin: 0 0 1.05rem; }
+    .legal-prose h2 {
+      font-family: var(--f-disp); font-weight: 760; letter-spacing: -.01em;
+      font-size: clamp(1.35rem, 2.6vw, 1.85rem); line-height: 1.1; color: var(--tanne);
+      margin: 2.6rem 0 .9rem; padding-top: 1.7rem; border-top: 1px solid var(--line-l);
+    }
+    .legal-prose h3 {
+      font-family: var(--f-disp); font-weight: 680;
+      font-size: clamp(1.05rem, 1.8vw, 1.2rem); color: var(--tanne);
+      margin: 1.7rem 0 .6rem; letter-spacing: -.005em;
+    }
+    .legal-prose ul { margin: 0 0 1.2rem; padding-left: 1.2rem; display: grid; gap: .5rem; max-width: 68ch; }
+    .legal-prose li { line-height: 1.62; padding-left: .2rem; }
+    .legal-prose li::marker { color: var(--signal-ink); }
+    .legal-prose strong { color: var(--tanne); font-weight: 640; }
+    .legal-prose em { font-family: var(--f-serif); font-style: italic; font-size: 1.05em; color: var(--moos); }
+    .legal-prose a {
+      color: var(--signal-ink); text-decoration: underline;
+      text-decoration-color: color-mix(in srgb, var(--signal-ink) 35%, transparent);
+      text-underline-offset: 3px; transition: text-decoration-color .2s;
+    }
+    .legal-prose a:hover { text-decoration-color: var(--signal-ink); }
+    /* the closing italic note in each document */
+    .legal-prose > p:last-child em { color: var(--moos); }
+
+    .legal-foot {
+      width: min(760px, calc(100% - 2 * var(--gutter))); margin: 0 auto;
+      padding: 1.6rem 0 2.4rem; border-top: 1px solid var(--line-l);
+      display: flex; justify-content: space-between; flex-wrap: wrap; gap: .8rem 2rem;
+      color: var(--moos);
+    }
+    .legal-foot .legal-links { display: flex; gap: 1.4rem; }
+    .legal-foot a { transition: color .2s; }
+    .legal-foot a:hover { color: var(--signal-ink); }
+
+    @media (max-width: 620px) {
+      .legal-body .g-head { flex-direction: column; gap: .8rem; align-items: flex-start; }
+    }
+  </style>
+</Base>

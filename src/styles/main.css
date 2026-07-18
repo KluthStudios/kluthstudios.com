@@ -554,6 +554,9 @@ a.card:hover .card-foot .arr { transform: translateX(5px); color: var(--signal);
   font-family: var(--f-mono); border: 1px solid var(--line-d);
   padding: .1rem .35rem; border-radius: 3px; font-size: .62rem;
 }
+.pit-legal { display: flex; gap: 1.2rem; flex-wrap: wrap; }
+.pit-legal a { color: var(--asche); transition: color .2s; }
+.pit-legal a:hover { color: var(--nebel); }
 
 /* ---------- 15 · Reveal machinery ---------- */
 .sr-mask { display: block; overflow: hidden; }
