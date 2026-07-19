@@ -51,7 +51,7 @@
   --f-serif: "Instrument Serif", Georgia, serif;
   --f-mono: "Martian Mono", "SFMono-Regular", Menlo, Consolas, monospace;
 
-  --fs-hero:  clamp(3.6rem, 11.5vw, 11rem);
+  --fs-hero:  clamp(3.8rem, 12.5vw, 12.5rem);
   --fs-gate:  clamp(3rem, 11vw, 10rem);
   --fs-h2:    clamp(2.4rem, 6.5vw, 5.4rem);
   --fs-h3:    clamp(1.7rem, 3.4vw, 2.9rem);
@@ -209,6 +209,10 @@ section { position: relative; }
 }
 #site-head.is-hidden { transform: translateY(-110%); }
 .brand { display: flex; align-items: center; gap: .7rem; }
+/* Homepage: hide the header brand — the giant hero wordmark carries the
+   identity. Kept in the DOM (visibility, not display) so the nav stays
+   right-aligned. Guide and legal headers use .g-head and are unaffected. */
+#site-head .brand { visibility: hidden; }
 .brand svg { width: 26px; height: 26px; }
 .brand .brand-word {
   font-weight: 760; letter-spacing: .02em; font-size: .95rem;
@@ -249,6 +253,9 @@ section { position: relative; }
   min-height: 100svh;
   display: flex; flex-direction: column; justify-content: flex-end;
   padding-top: 22vh;
+  /* clear a "pit-lane" strip at the bottom so the fixed lap HUD (track map +
+     telemetry) sits below the marquee instead of colliding with the wordmark */
+  padding-bottom: clamp(5rem, 20vh, 12rem);
 }
 /* local scrim: darkens the dawn scene behind the wordmark for contrast,
    bottom-weighted where the title sits; the dawn→night journey is untouched */
@@ -261,6 +268,9 @@ section { position: relative; }
     rgba(10, 16, 14, .72) 100%);
 }
 #hero > .wrap, #hero > .mq { position: relative; z-index: 1; }
+/* left-align the hero block to the page gutter instead of letting the
+   flex auto-margins shrink-wrap and centre it */
+#hero > .wrap { align-self: stretch; margin-inline: 0; }
 .hero-meta {
   display: flex; justify-content: space-between; gap: 1rem;
   margin-bottom: clamp(1.2rem, 3vh, 2.4rem); opacity: .9;
@@ -269,7 +279,7 @@ section { position: relative; }
   font-family: var(--f-disp);
   font-size: var(--fs-hero);
   font-weight: 860;
-  font-variation-settings: "wdth" 100;
+  font-variation-settings: "wdth" 110;
   line-height: .84;
   letter-spacing: -.015em;
   text-transform: uppercase;
@@ -605,6 +615,8 @@ body.show-grid #grid-overlay { display: grid; grid-template-columns: repeat(12, 
   .hero-meta { flex-direction: column; gap: .5rem; }
   .head-clock { display: none; }
   .hero-title .row.indent { padding-left: 8vw; }
+  /* HUD collapses to a compact telemetry row here, so a smaller strip suffices */
+  #hero { padding-bottom: clamp(2.5rem, 8vh, 4rem); }
 }
 @media (max-width: 480px) {
   :root { --fs-hero: clamp(3.4rem, 19vw, 5.2rem); }
