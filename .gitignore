@@ -2,3 +2,6 @@ node_modules/
 dist/
 .astro/
 npm-debug.log*
+
+# local agent/editor tooling (e.g. .claude/launch.json for the dev server)
+.claude/
