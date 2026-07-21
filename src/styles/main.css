@@ -59,6 +59,14 @@
   --fs-mono:  0.6875rem;
 
   --gutter: clamp(1.25rem, 4vw, 4.5rem);
+
+  /* Lap HUD footprint. The HUD is fixed bottom-left, so any body copy sharing
+     its horizontal band gets swept by it during scroll — bottom padding only
+     rescues sections pinned to the viewport bottom (#hero) or the page end.
+     Inner sections therefore reserve --hud-lane as a left instrument rail. */
+  --hud-w: 172px;
+  --hud-lane: calc(var(--hud-w) + 1.75rem);
+
   --ease-out: cubic-bezier(.16, 1, .3, 1);
   --ease-io:  cubic-bezier(.65, 0, .35, 1);
 }
@@ -233,7 +241,7 @@ section { position: relative; }
 /* ---------- 7 · Lap HUD (signature) ---------- */
 #hud {
   position: fixed; left: var(--gutter); bottom: 1.4rem; z-index: 90;
-  width: 172px; mix-blend-mode: difference; color: var(--nebel);
+  width: var(--hud-w); mix-blend-mode: difference; color: var(--nebel);
   pointer-events: none;
 }
 #hud .hud-map { width: 100%; overflow: visible; }
@@ -604,9 +612,35 @@ body.show-grid #grid-overlay { display: grid; grid-template-columns: repeat(12, 
   .studio-copy { grid-column: 1 / span 12; }
 }
 @media (max-width: 700px) {
-  #hud .hud-map, #hud .hud-rows .hud-row:nth-child(3) { display: none; }
-  #hud { width: auto; }
-  #hud .hud-rows { display: flex; gap: 1.1rem; }
+  /* No room for the instrument rail at this width (§ 20), so the HUD stops
+     floating over the copy and docks as full-bleed chrome instead: the track
+     map drops away and the telemetry spreads across a bottom strip. The
+     `difference` blend has to go with it — blended against its own backdrop it
+     would invert the copy passing underneath, which is the collision we are
+     fixing. A darkened blur stands in, so the strip still reads against every
+     colour the dawn → night scene moves through. */
+  #hud .hud-map { display: none; }
+  #hud {
+    left: 0; right: 0; bottom: 0; width: auto;
+    mix-blend-mode: normal;
+    padding: .5rem var(--gutter) calc(.5rem + env(safe-area-inset-bottom, 0px));
+    background: rgba(10, 16, 14, .84);
+    border-top: 1px solid var(--line-d);
+  }
+  #hud .hud-rows {
+    display: flex; justify-content: space-between; gap: 1rem;
+    margin-top: 0;
+  }
+  #hud .hud-row { gap: .5rem; }
+  /* Where it is supported, let the strip sample the scene instead of sitting on
+     a flat fill — the lap keeps showing through as it moves dawn → night. */
+  @supports ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+    #hud {
+      background: rgba(10, 16, 14, .38);
+      -webkit-backdrop-filter: blur(14px) brightness(.6);
+      backdrop-filter: blur(14px) brightness(.6);
+    }
+  }
   .works-grid { grid-template-columns: 1fr; }
   .card { min-height: 0; }
   .feat-stats { grid-template-columns: 1fr; }
@@ -622,6 +656,9 @@ body.show-grid #grid-overlay { display: grid; grid-template-columns: repeat(12, 
   :root { --fs-hero: clamp(3.4rem, 19vw, 5.2rem); }
   .brand .brand-word { font-size: .85rem; }
   #site-head nav { gap: .9rem; }
+  /* All three readouts need 424px of strip (384px of type + the gutters), so
+     phone-class widths drop the static TRACK figure and keep the live pair. */
+  #hud .hud-rows .hud-row:nth-child(3) { display: none; }
 }
 
 /* ---------- 18 · Reduced motion ---------- */
@@ -662,10 +699,25 @@ body.show-grid #grid-overlay { display: grid; grid-template-columns: repeat(12, 
 }
 
 /* ---------- 20 · PASS-3 responsive fixes ---------- */
-/* Give the resting HUD (final lap time) its own cool-down zone
-   below the footer base line instead of overlapping it. */
-@media (min-width: 701px) { #pit { padding-bottom: 200px; } }
-@media (max-width: 700px)  { #pit { padding-bottom: 4.5rem; } }
+/* Reserve the HUD lane. Above 700px the HUD is the tall left instrument
+   (track map + telemetry rows), so the scrolling sections indent their content
+   clear of it and the left rail reads as the instrument column it is.
+   #hero keeps the gutter alignment — its wordmark is the title card, and it
+   already clears the HUD via its own pit-lane strip (§ 8). Gates stay centred. */
+/* Upper bound: .wrap is max-width 1680 and centred, so past ~2080px the column
+   has already drifted clear of the fixed HUD on its own and the rail would just
+   be dead space. Below it, indent. */
+@media (min-width: 701px) and (max-width: 2079px) {
+  #studio > .wrap,
+  #works > .wrap,
+  #capabilities > .wrap,
+  #pit > .wrap {
+    padding-left: calc(var(--gutter) + var(--hud-lane));
+  }
+}
+/* With the lane reserved the footer no longer needs the old 200px cool-down
+   zone under the resting HUD — it sits beside the final lap time, not above it. */
+#pit { padding-bottom: 4.5rem; }
 
 /* 360px-class phones: keep the K mark, drop the wordmark,
    so four nav links never collide with the brand. */
