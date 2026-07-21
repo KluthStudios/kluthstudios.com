@@ -79,8 +79,35 @@ Conventions:
 
 ## Deploy
 
-Push to `main` → GitHub Actions (`.github/workflows/deploy.yml`) builds with
-Astro and deploys to GitHub Pages. `public/CNAME` binds `kluthstudios.com`.
+**The live site is on Hostinger, not GitHub Pages.** hPanel, with Cloudflare in
+front, updated by Hostinger's **Git auto-deploy** pulling from this repo. That
+integration lives in hPanel — nothing in this repository performs the deploy.
+
+`.github/workflows/deploy.yml` targets GitHub Pages and is **not** the deploy
+path. Pages has never been enabled (`GET /repos/KluthStudios/kluthstudios.com/pages`
+→ 404), so the workflow fails on every push. That red X is expected and does
+**not** mean the site is broken — do not "fix" it by enabling Pages, because DNS
+points at Hostinger. `public/CNAME` is a leftover from the same assumption and
+ships to `/CNAME` on the live site (harmless). Both are kept deliberately.
+
+Verified against production: response headers carry `platform: hostinger` and
+`panel: hpanel`, and the document served is the Astro build output (hashed
+`/_astro/…` assets), not the repo tree.
+
+To check what is actually live — do this before reporting a deploy as failed,
+rather than reading the Actions run:
+
+```bash
+curl -s https://kluthstudios.com | grep -o '/_astro/[^"]*\.css'   # live hash
+ls dist/_astro/                                                    # local hash
+```
+
+Matching hashes mean production is running that exact build.
+
+**Open question worth resolving:** `dist/` is gitignored, so a build has to run
+somewhere between the git pull and the served output. Confirm whether Hostinger
+runs `npm run build` on deploy or the output arrives another way, and record it
+here — this section was wrong once already.
 
 ## Notes / follow-ups
 

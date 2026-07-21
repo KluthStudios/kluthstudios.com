@@ -34,7 +34,7 @@ public/
   js/three.min.js           three.js r128 (MIT) — only runtime dependency
   fonts/*.woff2             Archivo, Instrument Serif, Martian Mono (OFL, subset)
   favicon.svg · og.png · CNAME · robots.txt
-.github/workflows/deploy.yml  push to main → build → GitHub Pages
+.github/workflows/deploy.yml  GitHub Pages workflow — NOT the live deploy path
 ```
 
 ## Add a project
@@ -44,18 +44,28 @@ server hot-reloads and the types refuse anything malformed at build time.
 Cards, numbering, and the generated telemetry artwork all derive from it.
 Field-by-field reference with an annotated snippet: **/guide/ § 03**.
 
-## Deploy to kluthstudios.com (≈10 min, then automatic forever)
+## Deploy
 
-1. Push this repo to GitHub, e.g. `KluthStudios/kluthstudios.com` (branch `main`).
-2. Repo → Settings → Pages → Source: **GitHub Actions**.
-   The included workflow builds and deploys on every push from then on.
-3. DNS at the registrar: apex `A` records → `185.199.108.153`, `.109.153`,
-   `.110.153`, `.111.153`; `www` CNAME → `kluthstudios.github.io`.
-4. Settings → Pages → Custom domain `kluthstudios.com` → wait for check →
-   Enforce HTTPS. (`public/CNAME` keeps the domain bound across deploys.)
+kluthstudios.com is hosted on **Hostinger** (hPanel, with Cloudflare in front)
+and updated by Hostinger's **Git auto-deploy**, which pulls from this repo. That
+integration is configured in hPanel — there is nothing in this repository that
+performs the deploy.
 
-Netlify / Vercel / Cloudflare Pages also work: connect the repo, accept the
-auto-detected Astro defaults (`npm run build`, output `dist`), attach the domain.
+`.github/workflows/deploy.yml` targets GitHub Pages and is **not** the live
+deploy path. Pages has never been enabled on the repo, so that workflow fails on
+every push; the red X is expected and does not mean the site is down. Don't
+"fix" it by turning Pages on — DNS points at Hostinger, not GitHub.
+`public/CNAME` is a leftover from the same assumption.
+
+To confirm what is actually live, compare the built asset hash against `dist/`:
+
+```bash
+curl -s https://kluthstudios.com | grep -o '/_astro/[^"]*\.css'
+ls dist/_astro/
+```
+
+The build output is plain HTML + CSS + three classic scripts, so it runs on any
+static host if the hosting ever moves.
 
 ## Honest notes
 
