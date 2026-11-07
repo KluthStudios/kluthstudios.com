@@ -1,0 +1,9 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "kluthstudios-site",
+  "compatibility_date": "2026-11-07",
+  "previews": {},
+  "assets": {
+    "directory": "./dist"
+  }
+}

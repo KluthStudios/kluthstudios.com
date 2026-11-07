@@ -34,7 +34,7 @@ public/
   js/three.min.js           three.js r128 (MIT) — only runtime dependency
   fonts/*.woff2             Archivo, Instrument Serif, Martian Mono (OFL, subset)
   favicon.svg · og.png · CNAME · robots.txt
-.github/workflows/deploy.yml  GitHub Pages workflow — NOT the live deploy path
+.github/workflows/deploy.yml  GitHub Actions validation workflow
 ```
 
 ## Add a project
@@ -46,16 +46,22 @@ Field-by-field reference with an annotated snippet: **/guide/ § 03**.
 
 ## Deploy
 
-kluthstudios.com is hosted on **Hostinger** (hPanel, with Cloudflare in front)
-and updated by Hostinger's **Git auto-deploy**, which pulls from this repo. That
-integration is configured in hPanel — there is nothing in this repository that
-performs the deploy.
+Cloudflare Workers serves the static `dist/` output using `wrangler.jsonc`.
+Build with Node 24 using `npm ci && npm test`. Cloudflare Builds is connected to
+this repository with `main` as the production branch and `npm test` as the build
+command. Production builds are paused until the migration branch is merged;
+then re-enable them in the Worker's Builds settings and verify a deployment.
+Branch previews are enabled. The current production deployment was uploaded
+with Wrangler and is available on the Worker's workers.dev address.
 
-`.github/workflows/deploy.yml` targets GitHub Pages and is **not** the live
-deploy path. Pages has never been enabled on the repo, so that workflow fails on
-every push; the red X is expected and does not mean the site is down. Don't
-"fix" it by turning Pages on — DNS points at Hostinger, not GitHub.
-`public/CNAME` is a leftover from the same assumption.
+Cloudflare Worker custom domains serve `kluthstudios.com` and
+`www.kluthstudios.com` directly. The earlier Worker routes remain configured on
+both hostnames; there is no longer a Hostinger website origin to fall back to.
+Cloudflare Email Routing forwards the domain's catch-all to the verified inbox.
+Preserve its MX and authentication records when changing DNS.
+
+`.github/workflows/deploy.yml` runs validation; Cloudflare Builds handles
+deployment. `public/CNAME` is a leftover from the former GitHub Pages setup.
 
 To confirm what is actually live, compare the built asset hash against `dist/`:
 
@@ -71,8 +77,8 @@ static host if the hosting ever moves.
 
 - The Traumrunde repo is **private** right now — its "View repository" button
   will 404 for the public until the repo is made public.
-- `hello@kluthstudios.com` is a **placeholder** — set the real inbox once in
-  `src/data/site.ts`.
+- `hello@kluthstudios.com` uses the Cloudflare catch-all forwarding rule; verify
+  delivery to the configured destination before relying on it.
 
 ## Easter eggs
 

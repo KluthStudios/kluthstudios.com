@@ -22,6 +22,7 @@
     "@astrojs/check": "^0.9.9",
     "html-validate": "^11.5.5",
     "jsdom": "^29.1.1",
-    "typescript": "^6.0.3"
+    "typescript": "^6.0.3",
+    "wrangler": "^4.158.0"
   }
 }

@@ -50,7 +50,7 @@ public/js/scene.js           <span class="c">WebGL dawn→night</span>
 public/js/main.js            <span class="c">HUD, reveals, cursor</span>
 public/js/three.min.js       <span class="c">three.js r128 (MIT)</span>
 public/fonts/*.woff2         <span class="c">self-hosted, subset</span>
-.github/workflows/deploy.yml <span class="c">push → build → Pages</span></pre>
+.github/workflows/deploy.yml <span class="c">GitHub validation</span></pre>
         </div>
       </div>
     </section>
@@ -139,21 +139,19 @@ public/fonts/*.woff2         <span class="c">self-hosted, subset</span>
       <div class="g-cols">
         <div>
           <ol class="steps">
-            <li><strong>Push the project to GitHub.</strong> Create a repository under the org — e.g. <code class="inline">KluthStudios/kluthstudios.com</code> — and push everything to <code class="inline">main</code>. The deploy workflow (<code class="inline">.github/workflows/deploy.yml</code>) and the <code class="inline">CNAME</code> file (in <code class="inline">public/</code>) are already included.</li>
-            <li><strong>Turn on Pages.</strong> Repo → Settings → Pages → Source: <strong>GitHub Actions</strong>. From now on every push to <code class="inline">main</code> builds the site and deploys it automatically — no manual steps.</li>
-            <li><strong>Point the DNS.</strong> At the domain registrar, add four A records on the apex (<code class="inline">@</code>): <code class="inline">185.199.108.153</code>, <code class="inline">185.199.109.153</code>, <code class="inline">185.199.110.153</code>, <code class="inline">185.199.111.153</code> — and a CNAME on <code class="inline">www</code> pointing to <code class="inline">kluthstudios.github.io</code>.</li>
-            <li><strong>Bind the domain.</strong> Back in Settings → Pages, enter <code class="inline">kluthstudios.com</code> as the custom domain, wait for the DNS check, then tick <strong>Enforce HTTPS</strong>. Propagation is usually minutes, occasionally a few hours.</li>
-            <li><strong>Verify the lap.</strong> Hard-refresh, scroll to the bottom, confirm the timer crosses the line at 6:57.000. You’re live.</li>
+            <li><strong>Build and test.</strong> Use Node 24, run <code class="inline">npm ci</code>, then <code class="inline">npm test</code>. Astro writes the static site to <code class="inline">dist/</code>.</li>
+            <li><strong>Preview on Cloudflare.</strong> The Worker configuration is in <code class="inline">wrangler.jsonc</code>. Test a deployment on its workers.dev address before changing production traffic.</li>
+            <li><strong>Verify the lap.</strong> Check the pages, links and assets, then scroll to the bottom and confirm the timer crosses the line at 6:57.000.</li>
           </ol>
           <div class="g-copy after-spec">
-            <p><strong>Prefer Netlify, Vercel or Cloudflare Pages?</strong> All three auto-detect Astro: connect the repo, accept the defaults (<code class="inline">npm run build</code>, output <code class="inline">dist</code>), attach the domain there instead. Locally, <code class="inline">npm run dev</code> serves the site at <code class="inline">localhost:4321</code> and <code class="inline">npm run preview</code> serves a production build.</p>
+            <p>Locally, <code class="inline">npm run dev</code> serves the site at <code class="inline">localhost:4321</code> and <code class="inline">npm run preview</code> serves a production build.</p>
           </div>
         </div>
         <div class="g-aside">
           <span class="mono">HONEST NOTES</span>
           <p class="aside-copy">① The <strong>Traumrunde repo is currently private</strong> — its “View repository” button will 404 for the public until the repo is flipped to public (or the link is pointed at a release/demo).<br /><br />
-          ② <code class="inline">hello@kluthstudios.com</code> is a <strong>placeholder inbox</strong> — set the real address once in <code class="inline">src/data/site.ts</code>.<br /><br />
-          ③ DNS and hosting need account access, so those two steps are yours — everything else ships in this repo.</p>
+          ② Cloudflare Email Routing forwards the domain's email to the configured destination.<br /><br />
+          ③ Preserve the Cloudflare email DNS records when changing website hosting.</p>
         </div>
       </div>
     </section>
