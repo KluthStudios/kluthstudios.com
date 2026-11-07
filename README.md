@@ -46,6 +46,12 @@ Field-by-field reference with an annotated snippet: **/guide/ § 03**.
 
 ## Deploy
 
+Cloudflare migration is in progress. `wrangler.jsonc` serves the static `dist/`
+output on Workers. Build with Node 24 using `npm ci && npm test`, then use
+`npx wrangler deploy` to deploy the configured Worker. Test the workers.dev
+preview before changing production hostnames. Preserve the existing Hostinger
+mail DNS records when changing website routing.
+
 kluthstudios.com is hosted on **Hostinger** (hPanel, with Cloudflare in front)
 and updated by Hostinger's **Git auto-deploy**, which pulls from this repo. That
 integration is configured in hPanel — there is nothing in this repository that
