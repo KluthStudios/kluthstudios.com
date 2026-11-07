@@ -46,24 +46,23 @@ Field-by-field reference with an annotated snippet: **/guide/ § 03**.
 
 ## Deploy
 
-Cloudflare migration is in progress. `wrangler.jsonc` serves the static `dist/`
-output on Workers. Build with Node 24 using `npm ci && npm test`, then use
-`npx wrangler deploy` to deploy the configured Worker. Test the workers.dev
-preview before changing production hostnames. Preserve the existing Hostinger
-mail DNS records when changing website routing.
-Cloudflare Builds is connected to this repository with `main` as its production
-branch, Node 24, and `npm test` as its build command. The migration branch must
-be merged before production builds can use its Wrangler configuration.
+Cloudflare Workers serves the static `dist/` output using `wrangler.jsonc`.
+Build with Node 24 using `npm ci && npm test`. Cloudflare Builds is connected to
+this repository with `main` as the production branch and `npm test` as the build
+command. Production builds are paused until the migration branch is merged;
+then re-enable them in the Worker's Builds settings and verify a deployment.
+Branch previews are enabled. The current production deployment was uploaded
+with Wrangler and is available on the Worker's workers.dev address.
 
-kluthstudios.com is hosted on **Hostinger** (hPanel, with Cloudflare in front)
-and updated by Hostinger's **Git auto-deploy**, which pulls from this repo. That
-integration is configured in hPanel — there is nothing in this repository that
-performs the deploy.
+Cloudflare routes for `kluthstudios.com/*` and `www.kluthstudios.com/*` serve
+the Worker. The existing proxied Hostinger website records remain as a rollback
+origin, with routes configured to fail open. Removing the two Worker routes
+returns web traffic to that origin. Preserve Hostinger's mail records and service.
 
 `.github/workflows/deploy.yml` targets GitHub Pages and is **not** the live
 deploy path. Pages has never been enabled on the repo, so that workflow fails on
 every push; the red X is expected and does not mean the site is down. Don't
-"fix" it by turning Pages on — DNS points at Hostinger, not GitHub.
+enable Pages as part of this deployment.
 `public/CNAME` is a leftover from the same assumption.
 
 To confirm what is actually live, compare the built asset hash against `dist/`:
