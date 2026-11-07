@@ -51,6 +51,9 @@ output on Workers. Build with Node 24 using `npm ci && npm test`, then use
 `npx wrangler deploy` to deploy the configured Worker. Test the workers.dev
 preview before changing production hostnames. Preserve the existing Hostinger
 mail DNS records when changing website routing.
+Cloudflare Builds is connected to this repository with `main` as its production
+branch, Node 24, and `npm test` as its build command. The migration branch must
+be merged before production builds can use its Wrangler configuration.
 
 kluthstudios.com is hosted on **Hostinger** (hPanel, with Cloudflare in front)
 and updated by Hostinger's **Git auto-deploy**, which pulls from this repo. That
