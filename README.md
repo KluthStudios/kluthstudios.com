@@ -34,7 +34,7 @@ public/
   js/three.min.js           three.js r128 (MIT) — only runtime dependency
   fonts/*.woff2             Archivo, Instrument Serif, Martian Mono (OFL, subset)
   favicon.svg · og.png · CNAME · robots.txt
-.github/workflows/deploy.yml  GitHub Pages workflow — NOT the live deploy path
+.github/workflows/deploy.yml  GitHub Actions validation workflow
 ```
 
 ## Add a project
@@ -60,11 +60,8 @@ both hostnames; there is no longer a Hostinger website origin to fall back to.
 Cloudflare Email Routing forwards the domain's catch-all to the verified inbox.
 Preserve its MX and authentication records when changing DNS.
 
-`.github/workflows/deploy.yml` targets GitHub Pages and is **not** the live
-deploy path. Pages has never been enabled on the repo, so that workflow fails on
-every push; the red X is expected and does not mean the site is down. Don't
-enable Pages as part of this deployment.
-`public/CNAME` is a leftover from the same assumption.
+`.github/workflows/deploy.yml` runs validation; Cloudflare Builds handles
+deployment. `public/CNAME` is a leftover from the former GitHub Pages setup.
 
 To confirm what is actually live, compare the built asset hash against `dist/`:
 
@@ -80,8 +77,8 @@ static host if the hosting ever moves.
 
 - The Traumrunde repo is **private** right now — its "View repository" button
   will 404 for the public until the repo is made public.
-- `hello@kluthstudios.com` is a **placeholder** — set the real inbox once in
-  `src/data/site.ts`.
+- `hello@kluthstudios.com` uses the Cloudflare catch-all forwarding rule; verify
+  delivery to the configured destination before relying on it.
 
 ## Easter eggs
 
