@@ -54,10 +54,11 @@ then re-enable them in the Worker's Builds settings and verify a deployment.
 Branch previews are enabled. The current production deployment was uploaded
 with Wrangler and is available on the Worker's workers.dev address.
 
-Cloudflare routes for `kluthstudios.com/*` and `www.kluthstudios.com/*` serve
-the Worker. The existing proxied Hostinger website records remain as a rollback
-origin, with routes configured to fail open. Removing the two Worker routes
-returns web traffic to that origin. Preserve Hostinger's mail records and service.
+Cloudflare Worker custom domains serve `kluthstudios.com` and
+`www.kluthstudios.com` directly. The earlier Worker routes remain configured on
+both hostnames; there is no longer a Hostinger website origin to fall back to.
+Cloudflare Email Routing forwards the domain's catch-all to the verified inbox.
+Preserve its MX and authentication records when changing DNS.
 
 `.github/workflows/deploy.yml` targets GitHub Pages and is **not** the live
 deploy path. Pages has never been enabled on the repo, so that workflow fails on
