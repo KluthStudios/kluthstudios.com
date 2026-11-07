@@ -74,40 +74,37 @@ Conventions:
   goes idle and screenshot capture can time out. Prefer verifying layout by
   measuring geometry in the page (`getBoundingClientRect`, glyph ink width) over
   relying on screenshots. Legal/guide (paper) pages capture fine.
-- `hello@kluthstudios.com` in `src/data/site.ts` is a **placeholder** inbox.
+- Cloudflare Email Routing forwards domain mail to `kurtkluth@me.com`; the
+  `hello@kluthstudios.com` forwarding path was tested successfully.
 - The Traumrunde "View repository" link points at a currently-private repo.
 
-## Deploy
+## Deploy and email
 
-**The live site is on Hostinger, not GitHub Pages.** hPanel, with Cloudflare in
-front, updated by Hostinger's **Git auto-deploy** pulling from this repo. That
-integration lives in hPanel — nothing in this repository performs the deploy.
-
-`.github/workflows/deploy.yml` targets GitHub Pages and is **not** the deploy
-path. Pages has never been enabled (`GET /repos/KluthStudios/kluthstudios.com/pages`
-→ 404), so the workflow fails on every push. That red X is expected and does
-**not** mean the site is broken — do not "fix" it by enabling Pages, because DNS
-points at Hostinger. `public/CNAME` is a leftover from the same assumption and
-ships to `/CNAME` on the live site (harmless). Both are kept deliberately.
-
-Verified against production: response headers carry `platform: hostinger` and
-`panel: hpanel`, and the document served is the Astro build output (hashed
-`/_astro/…` assets), not the repo tree.
-
-To check what is actually live — do this before reporting a deploy as failed,
-rather than reading the Actions run:
-
-```bash
-curl -s https://kluthstudios.com | grep -o '/_astro/[^"]*\.css'   # live hash
-ls dist/_astro/                                                    # local hash
-```
-
-Matching hashes mean production is running that exact build.
-
-**Open question worth resolving:** `dist/` is gitignored, so a build has to run
-somewhere between the git pull and the served output. Confirm whether Hostinger
-runs `npm run build` on deploy or the output arrives another way, and record it
-here — this section was wrong once already.
+- The Astro site builds to static `dist/` and is hosted by the
+  `kluthstudios-site` Cloudflare Worker. Both `kluthstudios.com` and
+  `www.kluthstudios.com` are Worker custom domains. Cloudflare manages DNS;
+  the former Hostinger website DNS records were removed. Existing Worker routes
+  for both hostnames also remain in place. There is no Hostinger website origin
+  available for rollback.
+- GitHub PR #6 was squash-merged into `main` as commit `068f736`. Cloudflare
+  Builds is connected to this repository, with production builds enabled for
+  `main`. It uses Node 24, `npm test`, and `npx wrangler deploy`. Branch previews
+  are enabled via the `previews` block in `wrangler.jsonc`. GitHub Actions runs
+  validation through `.github/workflows/deploy.yml`; it does not deploy Pages.
+- The production build of merged `main` passed and deployed Worker version
+  `929b4d4c`. A temporary build hook used to trigger it was removed. Both
+  hostnames returned successful HTTPS responses and missing pages returned 404.
+  Verify the current deployment in Cloudflare before making claims about later
+  changes. Follow Kurt's branch, checkpoint, PR, and merge agreements.
+- Cloudflare Email Routing is enabled with a catch-all to the verified
+  `kurtkluth@me.com` destination. A test sent to `hello@kluthstudios.com` was
+  received in that inbox. Preserve the Cloudflare MX, SPF, DKIM, and DMARC
+  records when changing DNS. The SPF record still includes Hostinger alongside
+  Cloudflare; legacy Hostinger email DNS entries remain. Do not remove them or
+  cancel services without checking whether anything else uses them.
+- `public/CNAME` is a harmless leftover from the old GitHub Pages assumption.
+  Domain registration was reported as Cosmotown in Cloudflare; verify the current
+  registrar and other account dependencies before cancelling any service.
 
 ## Notes / follow-ups
 

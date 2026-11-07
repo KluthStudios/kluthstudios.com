@@ -49,10 +49,8 @@ Field-by-field reference with an annotated snippet: **/guide/ § 03**.
 Cloudflare Workers serves the static `dist/` output using `wrangler.jsonc`.
 Build with Node 24 using `npm ci && npm test`. Cloudflare Builds is connected to
 this repository with `main` as the production branch and `npm test` as the build
-command. Production builds are paused until the migration branch is merged;
-then re-enable them in the Worker's Builds settings and verify a deployment.
-Branch previews are enabled. The current production deployment was uploaded
-with Wrangler and is available on the Worker's workers.dev address.
+command. Production builds and branch previews are enabled. The merged
+production build was verified in Cloudflare and deployed with Wrangler.
 
 Cloudflare Worker custom domains serve `kluthstudios.com` and
 `www.kluthstudios.com` directly. The earlier Worker routes remain configured on
